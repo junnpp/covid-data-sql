@@ -167,22 +167,63 @@ WHERE continent IS NOT NULL
 GROUP BY continent
 ORDER BY 2 DESC;
 
-# Global Numbers
-SELECT date, SUM(new_cases) -- , total_deaths, (total_deaths/total_cases) * 100 AS DeathPercentage
+# Global Numbers per Day Analysis
+SELECT
+	date,
+    SUM(new_cases) AS total_cases,
+    SUM(new_deaths) AS total_deaths,
+    SUM(new_deaths) / SUM(new_cases) * 100 AS DeathPercentage
 FROM CovidDeaths
 WHERE continent IS NOT NULL
 GROUP BY date
 ORDER BY 1, 2 DESC;
 
+# Total Population vs. Vaccinations
+SELECT d.continent, d.location, d.date, d.population, v.new_vaccinations
+FROM CovidDeaths AS d
+JOIN CovidVacc AS v
+	ON d.location = v.location
+	AND d.date = v.date
+WHERE d.continent IS NOT NULL
+ORDER BY 2,3;
 
+# Running Percentage of the New Vaccination Counts per Country
+DROP TABLE IF EXISTS PopulationVaccinated;
+CREATE TEMPORARY TABLE PopulationVaccinated 
+SELECT
+	d.continent,
+	d.location,
+	d.date,
+	d.population,
+	v.new_vaccinations,
+	SUM(v.new_vaccinations) OVER(PARTITION BY location ORDER BY d.location, d.date) AS running_sum_vacc_counts
+FROM CovidDeaths AS d
+JOIN CovidVacc AS v
+	ON d.location = v.location
+	AND d.date = v.date
+WHERE d.continent IS NOT NULL;
 
+SELECT *, running_sum_vacc_counts/population * 100 AS PercentageVaccinated
+FROM PopulationVaccinated;
 
+# View to store data for later visualization
+CREATE VIEW PopulationVaccinatedView AS(
+SELECT
+	d.continent,
+	d.location,
+	d.date,
+	d.population,
+	v.new_vaccinations,
+	SUM(v.new_vaccinations) OVER(PARTITION BY location ORDER BY d.location, d.date) AS running_sum_vacc_counts
+FROM CovidDeaths AS d
+JOIN CovidVacc AS v
+	ON d.location = v.location
+	AND d.date = v.date
+WHERE d.continent IS NOT NULL
+);
 
-
-
-
-
-
+SELECT *
+FROM PopulationVaccinatedView;
 
 
 
