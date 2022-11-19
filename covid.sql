@@ -206,8 +206,9 @@ WHERE d.continent IS NOT NULL;
 SELECT *, running_sum_vacc_counts/population * 100 AS PercentageVaccinated
 FROM PopulationVaccinated;
 
-# View to store data for later visualization
-CREATE VIEW PopulationVaccinatedView AS(
+# Create Views to store data for later visualization
+DROP VIEW IF EXISTS Population_Vaccinated;
+CREATE VIEW Population_Vaccinated AS(
 SELECT
 	d.continent,
 	d.location,
@@ -222,9 +223,45 @@ JOIN CovidVacc AS v
 WHERE d.continent IS NOT NULL
 );
 
-SELECT *
-FROM PopulationVaccinatedView;
+DROP VIEW IF EXISTS Death_Percentage;
+CREATE VIEW Death_Percentage AS (
+SELECT
+    SUM(new_cases) AS total_cases,
+    SUM(new_deaths) AS total_deaths,
+    SUM(new_deaths) / SUM(new_cases) * 100 AS DeathPercentage
+FROM CovidDeaths
+WHERE continent IS NOT NULL
+ORDER BY 1, 2 DESC
+);
 
+DROP VIEW IF EXISTS Death_By_Location;
+CREATE VIEW Death_By_Location AS (
+SELECT location, SUM(new_deaths) AS total_death
+FROM CovidDeaths
+WHERE continent IS NULL
+  AND location NOT IN ("World", "European Union", "International")
+GROUP BY location
+ORDER BY total_death DESC
+);
 
+DROP VIEW IF EXISTS Percent_Infected_By_Location;
+CREATE VIEW Percent_Infected_By_Location AS (
+SELECT
+	location,
+    population,
+    MAX(total_cases) AS HighestInfectionCount,
+    MAX((total_cases/population)) * 100 as HighestPercentInfected
+FROM CovidDeaths
+GROUP BY location, population
+ORDER BY HighestPercentInfected DESC
+);
 
-
+/* ------------- */
+SELECT
+	location,
+    population,
+    MAX(total_cases) AS HighestInfectionCount,
+    MAX((total_cases/population)) * 100 as HighestPercentInfected
+FROM CovidDeaths
+GROUP BY location, population
+ORDER BY HighestPercentInfected DESC;
