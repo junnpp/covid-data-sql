@@ -1,0 +1,11 @@
+continent,location,date,population,new_vaccinations,running_sum_vacc_counts,PercentageVaccinated
+Europe,Albania,2021-01-13,2877800,60,60,0.0021
+Europe,Albania,2021-01-14,2877800,78,138,0.0048
+Europe,Albania,2021-01-15,2877800,42,180,0.0063
+Europe,Albania,2021-01-16,2877800,61,241,0.0084
+Europe,Albania,2021-01-17,2877800,36,277,0.0096
+Europe,Albania,2021-01-18,2877800,42,319,0.0111
+Europe,Albania,2021-01-19,2877800,36,355,0.0123
+Europe,Albania,2021-01-20,2877800,36,391,0.0136
+Europe,Albania,2021-01-21,2877800,30,421,0.0146
+Europe,Albania,2021-02-18,2877800,1348,1769,0.0615

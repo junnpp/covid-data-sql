@@ -1,6 +1,8 @@
 CREATE DATABASE IF NOT EXISTS Covid;
 USE Covid;
-SET SQL_SAFE_UPDATES = 0;
+SET SQL_SAFE_UPDATES = 0; -- Disabling safe mode 
+SET GLOBAL local_infile=1;-- to load the data
+SET SESSION autocommit = 0;
 
 # importing deaths dataset
 CREATE TABLE CovidDeaths (
@@ -131,16 +133,18 @@ SELECT Location, date, total_cases, new_cases, total_deaths, population
 FROM CovidDeaths
 ORDER BY 1, 2;
 
-# Death rate per country
+# Death rate in the United States
 SELECT Location, date, total_cases, total_deaths, (total_deaths/total_cases) * 100 AS DeathPercentage
 FROM CovidDeaths
 WHERE location LIKE "%states%"
-ORDER BY 1, 2;
+ORDER BY 1, 2
+LIMIT 100, 10;
 
 # Total Cases vs. Population
 SELECT date, total_cases, population, (total_cases/population) * 100 AS InfectedPercentage
 FROM CovidDeaths
-WHERE location LIKE "%states%";
+WHERE location LIKE "%states%"
+LIMIT 50, 10;
 
 # Countries with Highest Infection Rate
 SELECT location, MAX(total_cases) AS HighestInfectionCount, MAX((total_cases/population) * 100) AS HighestInfectedPercentage
@@ -149,14 +153,13 @@ WHERE
 	location NOT IN ("World", "Asia", "Africa", "Europe",
 					 "North America", "South America", "European Union")
 GROUP BY location
-ORDER BY 3 DESC;
+ORDER BY 3 DESC
+LIMIT 10;
 
 # Countries with Highest Death Count
 SELECT location, MAX(total_deaths) AS TotalDeathCount
 FROM CovidDeaths
 WHERE continent IS NOT NULL
-	-- location NOT IN ("World", "Asia", "Africa", "Europe",
-	-- 				 "North America", "South America", "European Union")
 GROUP BY location
 ORDER BY 2 DESC;
 
@@ -176,7 +179,8 @@ SELECT
 FROM CovidDeaths
 WHERE continent IS NOT NULL
 GROUP BY date
-ORDER BY 1, 2 DESC;
+ORDER BY 1, 2 DESC
+LIMIT 100, 10;
 
 # Total Population vs. Vaccinations
 SELECT d.continent, d.location, d.date, d.population, v.new_vaccinations
@@ -184,7 +188,7 @@ FROM CovidDeaths AS d
 JOIN CovidVacc AS v
 	ON d.location = v.location
 	AND d.date = v.date
-WHERE d.continent IS NOT NULL
+WHERE d.continent IS NOT NULL AND v.new_vaccinations IS NOT NULL
 ORDER BY 2,3;
 
 # Running Percentage of the New Vaccination Counts per Country
@@ -204,7 +208,8 @@ JOIN CovidVacc AS v
 WHERE d.continent IS NOT NULL;
 
 SELECT *, running_sum_vacc_counts/population * 100 AS PercentageVaccinated
-FROM PopulationVaccinated;
+FROM PopulationVaccinated
+WHERE new_vaccinations IS NOT NULL;
 
 # Create Views to store data for later visualization
 DROP VIEW IF EXISTS Population_Vaccinated;
@@ -256,7 +261,6 @@ GROUP BY location, population
 ORDER BY HighestPercentInfected DESC
 );
 
-/* ------------- */
 SELECT
 	location,
     population,

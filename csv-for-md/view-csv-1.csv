@@ -1,0 +1,11 @@
+Location,date,total_cases,new_cases,total_deaths,population
+Afghanistan,2020-02-24,1,1,NULL,38928341
+Afghanistan,2020-02-25,1,0,NULL,38928341
+Afghanistan,2020-02-26,1,0,NULL,38928341
+Afghanistan,2020-02-27,1,0,NULL,38928341
+Afghanistan,2020-02-28,1,0,NULL,38928341
+Afghanistan,2020-02-29,1,0,NULL,38928341
+Afghanistan,2020-03-01,1,0,NULL,38928341
+Afghanistan,2020-03-02,1,0,NULL,38928341
+Afghanistan,2020-03-03,2,1,NULL,38928341
+Afghanistan,2020-03-04,4,2,NULL,38928341
