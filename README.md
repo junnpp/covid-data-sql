@@ -2,6 +2,8 @@
 
 [World wide covid19 data](https://ourworldindata.org/covid-deaths) analysis with two raw datasets `CovidDeaths` (n=85172) and `CovidVacc` (n=85172) from February 2020 to April 2021. [Here](https://public.tableau.com/app/profile/junhyeok.park/viz/CovidAnalysis_16688832454930/Dashboard1) is the final visualization of this analysis.
 
+![viz](./viz/viz-1.png)
+
 ## Preliminary Analysis
 
 First few rows of `CovidDeaths` with columns `Location`, `date`, `total_cases`, `new_cases`, `total_deaths`, and `population` are as follows:
